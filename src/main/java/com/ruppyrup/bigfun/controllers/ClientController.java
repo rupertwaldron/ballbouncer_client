@@ -1,16 +1,20 @@
 package com.ruppyrup.bigfun.controllers;
 
+import com.jfoenix.controls.JFXButton;
 import com.ruppyrup.bigfun.client.EchoClient;
 import com.ruppyrup.bigfun.common.Player;
 import com.ruppyrup.bigfun.utils.Position;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
@@ -37,6 +41,9 @@ public class ClientController implements Initializable {
     private int counter;
 
     @FXML
+    private Pane ballPane;
+
+    @FXML
     private ImageView image;
 
     @FXML
@@ -45,11 +52,45 @@ public class ClientController implements Initializable {
     @FXML
     private Label hitLabel;
 
+    @FXML
+    private JFXButton connectButton;
+
+    @FXML
+    private TextField ipAddress;
+
+    @FXML
+    private TextField port;
+
+    @FXML
+    private JFXButton quitButton;
+
+    @FXML
+    void connectToServer(ActionEvent event) {
+        echoClient = new EchoClient(this, ipAddress.getText(), Integer.valueOf(port.getText()));
+        echoClient.start();
+        echoClient.setOnSucceeded(e -> System.out.println("Succeeded :: " + echoClient.getValue()));
+        myPlayer = createCircle(PLAYER_RADIUS, Color.RED, new Position(200, 200));
+        ball = createCircle(BALL_RADIUS, Color.ORANGE, new Position(100, 100));
+    }
+
+    @FXML
+    void disconnectFromServer(ActionEvent event) {
+        echoClient.stopConnection();
+    }
+
     private Circle ball;
     private Circle myPlayer;
 
     @FXML
     void onMouseMoved(MouseEvent event) {
+        if (myPlayer == null) return;
+        if (event.getY() > 400) {
+            myPlayer.setVisible(false);
+        } else {
+            myPlayer.setVisible(true);
+        }
+
+
         if (counter++ == 2) {
             double adjustedX = event.getX();
             double adjustedY = event.getY();
@@ -62,19 +103,16 @@ public class ClientController implements Initializable {
 
     @FXML
     void onMousePressed(MouseEvent event) {
-//        mouseEvents.add(event);
+        mouseEvents.add(new Position(event.getX(), event.getY()));
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        echoClient = new EchoClient(this, "192.168.0.17", 6666);
-        echoClient.start();
 
-        myPlayer = createCircle(PLAYER_RADIUS, Color.RED, new Position(200, 200));
-        ball = createCircle(BALL_RADIUS, Color.ORANGE, new Position(100, 100));
         hitLabel.setText("0");
 
-        echoClient.setOnSucceeded(event -> System.out.println("Succeeded :: " + echoClient.getValue()));
+
+
     }
 
     private Circle createCircle(int radius, Paint color, Position startPosition) {

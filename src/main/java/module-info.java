@@ -2,6 +2,8 @@ module com.ruppyrup.bigfun {
     requires javafx.controls;
     requires javafx.fxml;
 
+    requires com.jfoenix;
+
     opens com.ruppyrup.bigfun to javafx.fxml;
     exports com.ruppyrup.bigfun;
 

@@ -1,25 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
+<?import com.jfoenix.controls.JFXButton?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.StackPane?>
 
-<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ruppyrup.bigfun.controllers.ClientController">
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ruppyrup.bigfun.controllers.ClientController">
    <children>
-      <ImageView fx:id="image" fitHeight="600.0" fitWidth="600.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@What-Is-Infinity.jpeg" />
-         </image>
-         <StackPane.margin>
-            <Insets />
-         </StackPane.margin>
-      </ImageView>
       <AnchorPane fx:id="anchorPane" onMouseMoved="#onMouseMoved" onMousePressed="#onMousePressed" prefHeight="400.0" prefWidth="600.0">
          <children>
-            <Label fx:id="hitLabel" text="Hits" textFill="#d9eb10" AnchorPane.leftAnchor="270.0" AnchorPane.topAnchor="0.0" />
+            <JFXButton fx:id="connectButton" onAction="#connectToServer" prefHeight="56.0" prefWidth="67.0" style="-fx-background-color: #3a4559#3a4559;" text="Connect" textFill="#d9eb10" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" />
+            <TextField fx:id="port" text="6666" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="250.0" />
+            <TextField fx:id="ipAddress" text="192.168.0.17" AnchorPane.bottomAnchor="60.0" AnchorPane.leftAnchor="250.0" />
+            <Label text="Port" AnchorPane.bottomAnchor="25.0" AnchorPane.leftAnchor="210.0" />
+            <Label prefHeight="17.0" prefWidth="67.0" text="ipAddress" AnchorPane.bottomAnchor="65.0" AnchorPane.leftAnchor="180.0" />
+            <JFXButton fx:id="quitButton" onAction="#disconnectFromServer" prefHeight="56.0" prefWidth="67.0" style="-fx-background-color: #3a4559#3a4559;" text="Quit" textFill="#d9eb10" AnchorPane.bottomAnchor="20.0" AnchorPane.rightAnchor="20.0" />
+            <Pane fx:id="ballPane" prefHeight="406.0" prefWidth="600.0" style="-fx-background-color: #201b1f;" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <Label fx:id="hitLabel" layoutX="280.0" text="Hits" textFill="#d9eb10" />
+               </children>
+            </Pane>
          </children></AnchorPane>
    </children>
 </StackPane>
