@@ -1,17 +1,18 @@
 package com.ruppyrup.bigfun.clientcommands;
 
-import com.ruppyrup.bigfun.client.EchoClient;
+import com.ruppyrup.bigfun.controllers.ClientController;
 
-public class Quit implements Command{
-    private final EchoClient echoClient;
+public class Quit implements Command {
 
-    public Quit(EchoClient echoClient) {
-        this.echoClient = echoClient;
-    }
+  private final ClientController clientController;
 
-    @Override
-    public void execute() {
-        System.out.println("Been asked to quit by server");
-        echoClient.stopConnection();
-    }
+  public Quit(ClientController clientController) {
+    this.clientController = clientController;
+  }
+
+  @Override
+  public void execute() {
+    System.out.println("Been asked to quit by server");
+    clientController.disconnectFromServer();
+  }
 }

@@ -26,10 +26,8 @@ public class TestServer {
 
     private boolean enableServer = true;
     private final Map<String, PrintWriter> clients = new HashMap<>();
-    private final ExecutorService executorService;
 
     public TestServer() {
-        this.executorService = Executors.newFixedThreadPool(2);
     }
 
     public String startServer(int port) {
@@ -75,16 +73,11 @@ public class TestServer {
                 addNewPlayerToServerAndExistingPlayers(out);
                 System.out.println("Running echo handler");
 
-                for (int i = 0; i < 2; i++) {
-                    clients.forEach((id, writer) -> {
-                        writer.println(TEST + ">" + clientId);
-                        out.println(TEST + ">" + id);
-                    });
-                }
+                sendBallPosition(150, 150);
 
                 clients.forEach((id, writer) -> {
                     writer.println(QUIT + ">" + clientId);
-                    out.println(QUIT + ">" + id);
+//                    out.println(QUIT + ">" + id);
                 });
 
 
