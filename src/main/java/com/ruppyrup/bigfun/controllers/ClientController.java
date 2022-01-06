@@ -76,6 +76,8 @@ public class ClientController implements Initializable {
     @FXML
     void disconnectFromServer(ActionEvent event) {
         echoClient.stopConnection();
+        ball.setVisible(false);
+        hitLabel.setText("0");
     }
 
     private Circle ball;

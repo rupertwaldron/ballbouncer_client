@@ -5,5 +5,7 @@ public enum EchoCommands {
     REMOVE_PLAYER,
     CO_ORD,
     BALL_POSITION,
-    HIT_COUNT
+    HIT_COUNT,
+    QUIT,
+    TEST
 }

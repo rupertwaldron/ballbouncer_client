@@ -14,7 +14,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 public class EchoClient extends Service<EchoClientResult> {
-    private boolean connected = true;
+    private boolean connected = false;
     private PrintWriter out;
     private final String ipAddress;
     private final int port;
@@ -23,12 +23,17 @@ public class EchoClient extends Service<EchoClientResult> {
     public EchoClient(ClientController clientController, String ipAddress, int port) {
         this.ipAddress = ipAddress;
         this.port = port;
-        this.commandFactory = new CommandFactory(clientController);
+        this.commandFactory = new CommandFactory(clientController, this);
     }
 
-    private EchoClientResult startConnection() {
+    public EchoClientResult startConnection() {
         try(Socket clientSocket = new Socket(ipAddress, port);
             BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()))) {
+
+            if (clientSocket.isConnected()) {
+                System.out.println("Connected to server :: " + clientSocket.getInetAddress());
+                connected = true;
+            }
 
             out = new PrintWriter(clientSocket.getOutputStream(), true);
 
@@ -43,7 +48,7 @@ public class EchoClient extends Service<EchoClientResult> {
         } finally {
             System.out.println("Closing connection on port :: " + port);
             stopConnection();
-            System.exit(0);
+//            System.exit(0);
         }
         return EchoClientResult.SUCCESS;
     }
@@ -56,6 +61,10 @@ public class EchoClient extends Service<EchoClientResult> {
     public void stopConnection() {
         connected = false;
         out.close();
+    }
+
+    public boolean isConnected() {
+        return connected;
     }
 
     @Override
