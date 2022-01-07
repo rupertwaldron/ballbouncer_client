@@ -39,8 +39,7 @@ javafx {
 dependencies {
     implementation('com.jfoenix:jfoenix:9.0.10')
 
-    implementation 'org.mockito:mockito-junit-jupiter:4.2.0'
-//    implementation 'org.mockito:mockito-all:1.10.19'
+    testImplementation 'org.mockito:mockito-junit-jupiter:4.2.0'
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
 }
