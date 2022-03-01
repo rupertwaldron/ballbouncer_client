@@ -13,7 +13,7 @@
          <children>
             <JFXButton fx:id="connectButton" onAction="#connectToServer" prefHeight="56.0" prefWidth="67.0" style="-fx-background-color: #3a4559#3a4559;" text="Connect" textFill="#d9eb10" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" />
             <TextField fx:id="port" text="6666" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="250.0" />
-            <TextField fx:id="ipAddress" text="192.168.0.17" AnchorPane.bottomAnchor="60.0" AnchorPane.leftAnchor="250.0" />
+            <TextField fx:id="ipAddress" text="127.0.0.1" AnchorPane.bottomAnchor="60.0" AnchorPane.leftAnchor="250.0" />
             <Label text="Port" AnchorPane.bottomAnchor="25.0" AnchorPane.leftAnchor="210.0" />
             <Label prefHeight="17.0" prefWidth="67.0" text="ipAddress" AnchorPane.bottomAnchor="65.0" AnchorPane.leftAnchor="180.0" />
             <JFXButton fx:id="quitButton" onAction="#disconnectFromServer" prefHeight="56.0" prefWidth="67.0" style="-fx-background-color: #3a4559#3a4559;" text="Quit" textFill="#d9eb10" AnchorPane.bottomAnchor="20.0" AnchorPane.rightAnchor="20.0" />
