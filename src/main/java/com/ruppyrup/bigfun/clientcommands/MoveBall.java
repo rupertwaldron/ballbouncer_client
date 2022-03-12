@@ -3,14 +3,14 @@ package com.ruppyrup.bigfun.clientcommands;
 import com.ruppyrup.bigfun.controllers.ClientController;
 import javafx.application.Platform;
 
-public class BallPosition implements Command {
+public class MoveBall implements Command {
 
   private final ClientController animationController;
   private final String id;
   private final Double xValue;
   private final Double yValue;
 
-  public BallPosition(ClientController clientController, String input) {
+  public MoveBall(ClientController clientController, String input) {
     String[] inputs = input.split("%");
     id = inputs[0];
     String[] xyValues = inputs[1].split(":");
@@ -22,6 +22,5 @@ public class BallPosition implements Command {
   @Override
   public void execute() {
     Platform.runLater(() -> animationController.moveBall(xValue, yValue));
-//        System.out.println("Executed BallPosition to coordinate: " + xValue + ":" + yValue);
   }
 }

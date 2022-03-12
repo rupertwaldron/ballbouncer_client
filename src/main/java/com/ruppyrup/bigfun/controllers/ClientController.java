@@ -3,6 +3,8 @@ package com.ruppyrup.bigfun.controllers;
 import com.jfoenix.controls.JFXButton;
 import com.ruppyrup.bigfun.client.EchoClient;
 import com.ruppyrup.bigfun.clientcommands.CommandFactory;
+import com.ruppyrup.bigfun.common.Ball;
+import com.ruppyrup.bigfun.common.Moveable;
 import com.ruppyrup.bigfun.common.Player;
 import com.ruppyrup.bigfun.utils.Position;
 import javafx.animation.KeyFrame;
@@ -40,7 +42,8 @@ public class ClientController implements Initializable {
   private EchoClient echoClient;
   private Map<String, Player> players = new HashMap<>();
   private CommandFactory clientCommandFactory;
-
+  private Ball ball;
+  private Player myPlayer;
   private int counter;
 
   @FXML
@@ -77,43 +80,27 @@ public class ClientController implements Initializable {
     );
     echoClient.start();
     echoClient.setOnSucceeded(e -> System.out.println("Succeeded :: " + echoClient.getValue()));
-    myPlayer = createCircle(PLAYER_RADIUS, Color.RED, new Position(200, 200));
-    ball = createCircle(BALL_RADIUS, Color.ORANGE, new Position(100, 100));
+    myPlayer = new Player("0", createCircle(PLAYER_RADIUS, Color.RED, new Position(200, 200)));
+    ball = new Ball("0", createCircle(BALL_RADIUS, Color.ORANGE, new Position(100, 100)));
   }
 
   @FXML
   public void disconnectFromServer() {
     echoClient.stopConnection();
-    ball.setVisible(false);
-    myPlayer.setVisible(false);
-    players.forEach((id, player) -> player.setVisible(false));
+    ball.setInvisible();
+    myPlayer.setInvisible();
+    players.forEach((id, player) -> player.setInvisible());
     players.clear();
     ball = null;
     myPlayer = null;
     hitLabel.setText("0");
   }
 
-  private Circle ball;
-  private Circle myPlayer;
-
   @FXML
   void onMouseMoved(MouseEvent event) {
-    if (myPlayer == null) {
-      return;
-    }
-    if (event.getY() > 400) {
-      myPlayer.setVisible(false);
-    } else {
-      myPlayer.setVisible(true);
-    }
-
-    if (counter++ == 2) {
-      double adjustedX = event.getX();
-      double adjustedY = event.getY();
-      mouseEvents.add(new Position(adjustedX, adjustedY));
-      echoClient.sendMessage(adjustedX + ":" + adjustedY);
-      counter = 0;
-    }
+    if (myPlayer == null) return;
+    makePlayerInvisibleOnMenu(myPlayer, event.getY());
+    sendBallPositionEveryNEvents(event, 2);
     buttonTransition();
   }
 
@@ -124,10 +111,7 @@ public class ClientController implements Initializable {
 
   @Override
   public void initialize(URL location, ResourceBundle resources) {
-
     hitLabel.setText("0");
-
-
   }
 
   private Circle createCircle(int radius, Paint color, Position startPosition) {
@@ -160,18 +144,13 @@ public class ClientController implements Initializable {
   }
 
   public void moveOtherPlayer(String id, double xValue, double yValue) {
-    Circle playerToMove = Optional.ofNullable(players.get(id)).map(Player::getCircle).orElse(null);
+    Player playerToMove = players.get(id);
 
     if (playerToMove == null) {
       return; // if own button or button doesn't exist
     }
 
-    if (yValue > 400) {
-      playerToMove.setVisible(false);
-    } else {
-      playerToMove.setVisible(true);
-    }
-
+    makePlayerInvisibleOnMenu(playerToMove, yValue);
     transitionNode(playerToMove, xValue, yValue, 150);
   }
 
@@ -179,23 +158,38 @@ public class ClientController implements Initializable {
     transitionNode(ball, xValue, yValue, 20);
   }
 
-  private void transitionNode(Circle nodeToMove, double xValue, double yValue, int duration) {
+  private void transitionNode(Moveable toMove, double xValue, double yValue, int duration) {
     Timeline timeline = new Timeline(new KeyFrame(Duration.millis(duration), t -> {
-      nodeToMove.setCenterX(xValue);
-      nodeToMove.setCenterY(yValue);
+      toMove.move(xValue, yValue);
     }));
     timeline.setCycleCount(1);
     timeline.play();
   }
 
   public void removePlayer(String id) {
-    Circle playerToRemove = players.get(id).getCircle();
-    playerToRemove.setDisable(true);
-    playerToRemove.setVisible(false);
+    players.get(id).remove();
     players.remove(id);
   }
 
   public void updateHitCount(String count) {
     hitLabel.setText(count);
+  }
+
+  private void sendBallPositionEveryNEvents(MouseEvent event, int frequency) {
+    if (counter++ == frequency) {
+      double adjustedX = event.getX();
+      double adjustedY = event.getY();
+      mouseEvents.add(new Position(adjustedX, adjustedY));
+      echoClient.sendMessage(adjustedX + ":" + adjustedY);
+      counter = 0;
+    }
+  }
+
+  private void makePlayerInvisibleOnMenu(Player player, double yPosition) {
+    if (yPosition > 400) {
+      player.setInvisible();
+    } else {
+      player.setVisible();
+    }
   }
 }

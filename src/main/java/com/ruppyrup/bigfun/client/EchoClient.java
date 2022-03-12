@@ -4,6 +4,7 @@ import com.ruppyrup.bigfun.clientcommands.Command;
 import com.ruppyrup.bigfun.clientcommands.CommandFactory;
 import com.ruppyrup.bigfun.clientcommands.EchoCommands;
 import com.ruppyrup.bigfun.controllers.ClientController;
+import java.io.Writer;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 

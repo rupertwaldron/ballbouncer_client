@@ -2,11 +2,11 @@ package com.ruppyrup.bigfun.common;
 
 import javafx.scene.shape.Circle;
 
-public class Player implements Moveable {
+public class Ball implements Moveable {
   private final Circle circle;
   private final String id;
 
-  public Player(String id, Circle circle) {
+  public Ball(String id, Circle circle) {
     this.circle = circle;
     this.id = id;
   }
@@ -36,4 +36,5 @@ public class Player implements Moveable {
   public Circle getCircle() {
     return circle;
   }
+
 }

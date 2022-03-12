@@ -2,13 +2,10 @@ package com.ruppyrup.bigfun.client;
 
 import com.ruppyrup.bigfun.TestServer;
 import com.ruppyrup.bigfun.TestServer.EchoClientHandler;
-import com.ruppyrup.bigfun.clientcommands.BallPosition;
+import com.ruppyrup.bigfun.clientcommands.MoveBall;
 import com.ruppyrup.bigfun.clientcommands.Command;
 import com.ruppyrup.bigfun.clientcommands.CommandFactory;
-import com.ruppyrup.bigfun.clientcommands.EchoCommands;
 import com.ruppyrup.bigfun.clientcommands.Quit;
-import com.ruppyrup.bigfun.controllers.ClientController;
-import java.util.Set;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -53,7 +50,7 @@ class EchoClientTest {
   @Test
   void sendBallPositionMessage() {
 
-    Command mockBallPositionCommand = mock(BallPosition.class);
+    Command mockBallPositionCommand = mock(MoveBall.class);
     Command mockQuitCommand = mock(Quit.class);
 
     String commandFromServer = "BALL_POSITION" + ">" + "all" + "%" + 150 + ":" + 150;

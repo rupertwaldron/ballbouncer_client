@@ -14,7 +14,7 @@ public class CommandFactory {
     return switch (echoCommands) {
       case ADD_PLAYER -> new AddPlayer(animationController, input);
       case CO_ORD -> new MovePosition(animationController, input);
-      case BALL_POSITION -> new BallPosition(animationController, input);
+      case BALL_POSITION -> new MoveBall(animationController, input);
       case REMOVE_PLAYER -> new RemovePlayer(animationController, input);
       case HIT_COUNT -> new AddHit(animationController, input);
       case QUIT -> new Quit(animationController);
