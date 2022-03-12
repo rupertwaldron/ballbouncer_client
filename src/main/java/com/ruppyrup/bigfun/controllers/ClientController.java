@@ -40,7 +40,8 @@ public class ClientController implements Initializable {
   private CommandFactory clientCommandFactory;
   private GameObject ball;
   private GameObject myPlayer;
-  private int counter;
+  private int counter = 0;
+  private boolean connected = false;
 
   @FXML
   private Pane ballPane;
@@ -76,10 +77,7 @@ public class ClientController implements Initializable {
     );
     echoClient.start();
     echoClient.setOnSucceeded(e -> System.out.println("Succeeded :: " + echoClient.getValue()));
-    myPlayer = new Player("0", PLAYER_RADIUS, Color.RED);
-    myPlayer.addToAnchorPane(anchorPane);
-    ball = new Ball("0", BALL_RADIUS, Color.ORANGE);
-    ball.addToAnchorPane(anchorPane);
+    connected = true;
   }
 
   @FXML
@@ -96,7 +94,7 @@ public class ClientController implements Initializable {
 
   @FXML
   void onMouseMoved(MouseEvent event) {
-    if (myPlayer == null) return;
+    if (myPlayer == null || !connected) return;
     makeObjectInvisibleOnMenu(myPlayer, event.getY());
     sendBallPositionEveryNEvents(event, 2);
     buttonTransition();
@@ -110,6 +108,10 @@ public class ClientController implements Initializable {
   @Override
   public void initialize(URL location, ResourceBundle resources) {
     hitLabel.setText("0");
+    myPlayer = new Player("0", PLAYER_RADIUS, Color.RED);
+    myPlayer.addToAnchorPane(anchorPane);
+    ball = new Ball("0", BALL_RADIUS, Color.ORANGE);
+    ball.addToAnchorPane(anchorPane);
   }
 
   public void addNewPlayer(String id) {
