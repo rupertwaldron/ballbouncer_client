@@ -6,6 +6,7 @@ import com.ruppyrup.bigfun.clientcommands.CommandFactory;
 import com.ruppyrup.bigfun.common.Ball;
 import com.ruppyrup.bigfun.common.GameObject;
 import com.ruppyrup.bigfun.common.Player;
+import com.ruppyrup.bigfun.common.PlayerService;
 import com.ruppyrup.bigfun.utils.Position;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -36,12 +37,11 @@ public class ClientController implements Initializable {
 
   private Queue<Position> mouseEvents = new LinkedList<>();
   private EchoClient echoClient;
-  private Map<String, GameObject> players = new HashMap<>();
   private CommandFactory clientCommandFactory;
   private GameObject ball;
-  private GameObject myPlayer;
   private int counter = 0;
   private boolean connected = false;
+  private PlayerService playerService;
 
   @FXML
   private Pane ballPane;
@@ -69,12 +69,6 @@ public class ClientController implements Initializable {
 
   @FXML
   void connectToServer(ActionEvent event) {
-    clientCommandFactory = new CommandFactory(this);
-    echoClient = new EchoClient(
-        clientCommandFactory,
-        ipAddress.getText(),
-        Integer.parseInt(port.getText())
-    );
     echoClient.start();
     echoClient.setOnSucceeded(e -> System.out.println("Succeeded :: " + echoClient.getValue()));
     connected = true;
@@ -83,19 +77,16 @@ public class ClientController implements Initializable {
   @FXML
   public void disconnectFromServer() {
     echoClient.stopConnection();
+    playerService.clearPlayers();
     ball.setInvisible();
-    myPlayer.setInvisible();
-    players.forEach((id, player) -> player.setInvisible());
-    players.clear();
     ball = null;
-    myPlayer = null;
     hitLabel.setText("0");
   }
 
   @FXML
   void onMouseMoved(MouseEvent event) {
-    if (myPlayer == null || !connected) return;
-    makeObjectInvisibleOnMenu(myPlayer, event.getY());
+    if (!playerService.isPlayerAvailable() || !connected) return;
+    makeObjectInvisibleOnMenu(playerService.getMyPlayer(), event.getY());
     sendBallPositionEveryNEvents(event, 2);
     buttonTransition();
   }
@@ -107,24 +98,24 @@ public class ClientController implements Initializable {
 
   @Override
   public void initialize(URL location, ResourceBundle resources) {
+    clientCommandFactory = new CommandFactory(this);
+    playerService = new PlayerService(anchorPane);
+    echoClient = new EchoClient(
+        clientCommandFactory,
+        ipAddress.getText(),
+        Integer.parseInt(port.getText())
+    );
     hitLabel.setText("0");
-    myPlayer = new Player("0", PLAYER_RADIUS, Color.RED);
-    myPlayer.addToAnchorPane(anchorPane);
     ball = new Ball("0", BALL_RADIUS, Color.ORANGE);
     ball.addToAnchorPane(anchorPane);
   }
 
   public void addNewPlayer(String id) {
-    System.out.println("Adding new button");
-    String color = getRandomRGBColor();
-    System.out.println("Color :: " + color);
-    GameObject player = new Player(id, PLAYER_RADIUS, Color.valueOf(color));
-    player.addToAnchorPane(anchorPane);
-    players.put(id, player);
+    playerService.addNewPlayer(id);
   }
 
   public void moveOtherPlayer(String id, double xValue, double yValue) {
-    GameObject playerToMove = players.get(id);
+    GameObject playerToMove = playerService.getPlayer(id);
     if (playerToMove == null) return;
     makeObjectInvisibleOnMenu(playerToMove, yValue);
     transitionNode(playerToMove, xValue, yValue, 150);
@@ -141,8 +132,7 @@ public class ClientController implements Initializable {
   }
 
   public void removePlayer(String id) {
-    players.get(id).remove();
-    players.remove(id);
+   playerService.removePlayer(id);
   }
 
   public void updateHitCount(String count) {
@@ -170,7 +160,7 @@ public class ClientController implements Initializable {
   private void buttonTransition() {
     while (!mouseEvents.isEmpty()) {
       Position position = mouseEvents.remove();
-      transitionNode(myPlayer, position.getX(), position.getY(), 150);
+      transitionNode(playerService.getMyPlayer(), position.getX(), position.getY(), 150);
     }
   }
 }
