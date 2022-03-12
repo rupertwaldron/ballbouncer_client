@@ -1,14 +1,12 @@
 package com.ruppyrup.bigfun.common;
 
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
-public class Ball implements Moveable {
-  private final Circle circle;
-  private final String id;
+public class Ball extends GameObject {
 
-  public Ball(String id, Circle circle) {
-    this.circle = circle;
-    this.id = id;
+  public Ball(String id, int radius, Color color) {
+    super(id, radius, color);
   }
 
   @Override
