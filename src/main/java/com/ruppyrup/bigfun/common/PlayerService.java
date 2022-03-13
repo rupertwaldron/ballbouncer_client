@@ -20,10 +20,8 @@ public class PlayerService {
   }
 
   public void clearPlayers() {
-    myPlayer.setInvisible();
     players.forEach((id, player) -> player.setInvisible());
     players.clear();
-    myPlayer = null;
   }
 
   public boolean isPlayerAvailable() {

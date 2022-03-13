@@ -69,6 +69,14 @@ public class ClientController implements Initializable {
 
   @FXML
   void connectToServer(ActionEvent event) {
+    echoClient = new EchoClient(
+        clientCommandFactory,
+        ipAddress.getText(),
+        Integer.parseInt(port.getText())
+    );
+    hitLabel.setText("0");
+    ball = new Ball("0", BALL_RADIUS, Color.ORANGE);
+    ball.addToAnchorPane(anchorPane);
     echoClient.start();
     echoClient.setOnSucceeded(e -> System.out.println("Succeeded :: " + echoClient.getValue()));
     connected = true;
@@ -100,14 +108,7 @@ public class ClientController implements Initializable {
   public void initialize(URL location, ResourceBundle resources) {
     clientCommandFactory = new CommandFactory(this);
     playerService = new PlayerService(anchorPane);
-    echoClient = new EchoClient(
-        clientCommandFactory,
-        ipAddress.getText(),
-        Integer.parseInt(port.getText())
-    );
     hitLabel.setText("0");
-    ball = new Ball("0", BALL_RADIUS, Color.ORANGE);
-    ball.addToAnchorPane(anchorPane);
   }
 
   public void addNewPlayer(String id) {
