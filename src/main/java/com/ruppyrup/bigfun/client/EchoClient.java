@@ -5,6 +5,7 @@ import com.ruppyrup.bigfun.clientcommands.CommandFactory;
 import com.ruppyrup.bigfun.clientcommands.EchoCommands;
 import com.ruppyrup.bigfun.controllers.ClientController;
 import java.io.Writer;
+import java.net.UnknownHostException;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 
@@ -21,6 +22,8 @@ public class EchoClient extends Service<EchoClientResult> {
   private final String ipAddress;
   private final int port;
   private final CommandFactory commandFactory;
+  private Socket clientSocket;
+  private BufferedReader in;
 
   public EchoClient(
       CommandFactory clientCommandFactory,
@@ -33,35 +36,37 @@ public class EchoClient extends Service<EchoClientResult> {
   }
 
   public EchoClientResult startConnection() {
-    try (Socket clientSocket = new Socket(ipAddress, port);
-        BufferedReader in = new BufferedReader(
-            new InputStreamReader(clientSocket.getInputStream()))) {
-
+    try {
+      clientSocket = new Socket(ipAddress, port);
       if (clientSocket.isConnected()) {
         System.out.println("Connected to server :: " + clientSocket.getInetAddress());
         connected = true;
       }
 
+      in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
       out = new PrintWriter(clientSocket.getOutputStream(), true);
-
-      String commandFromServer;
-      while (connected) {
-        commandFromServer = in.readLine();
-        if (commandFromServer == null) break;
-        String[] serverInput = commandFromServer.split(">");
-        System.out.println(serverInput[0] + ">" + serverInput[1]);
-        Command command = commandFactory.getCommand(EchoCommands.valueOf(serverInput[0]),
-            serverInput[1]);
-        command.execute();
-      }
+    } catch (UnknownHostException e) {
+      e.printStackTrace();
     } catch (IOException e) {
       e.printStackTrace();
-    } finally {
-      System.out.println("Closing connection on port :: " + port);
-      stopConnection();
-//            System.exit(0);
     }
     return EchoClientResult.SUCCESS;
+  }
+
+  public EchoClient receiveCommand() {
+    String commandFromServer;
+    try {
+      commandFromServer = in.readLine();
+      if (commandFromServer == null) return this;
+      String[] serverInput = commandFromServer.split(">");
+      System.out.println(serverInput[0] + ">" + serverInput[1]);
+      Command command = commandFactory.getCommand(EchoCommands.valueOf(serverInput[0]),
+          serverInput[1]);
+      command.execute();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return this;
   }
 
   public String sendMessage(String msg) {
@@ -71,6 +76,12 @@ public class EchoClient extends Service<EchoClientResult> {
 
   public void stopConnection() {
     connected = false;
+    try {
+      clientSocket.close();
+      in.close();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
     out.close();
   }
 
@@ -83,7 +94,11 @@ public class EchoClient extends Service<EchoClientResult> {
     return new Task<>() {
       @Override
       protected EchoClientResult call() throws Exception {
-        return startConnection();
+        startConnection();
+        while (isConnected()) {
+          receiveCommand();
+        }
+        return EchoClientResult.SUCCESS;
       }
     };
   }

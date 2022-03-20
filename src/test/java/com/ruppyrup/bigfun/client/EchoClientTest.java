@@ -1,7 +1,7 @@
 package com.ruppyrup.bigfun.client;
 
-import com.ruppyrup.bigfun.TestServer;
-import com.ruppyrup.bigfun.TestServer.EchoClientHandler;
+import com.ruppyrup.bigfun.componenttests.mockservers.TestServer;
+import com.ruppyrup.bigfun.componenttests.mockservers.TestServer.EchoClientHandler;
 import com.ruppyrup.bigfun.clientcommands.MoveBall;
 import com.ruppyrup.bigfun.clientcommands.Command;
 import com.ruppyrup.bigfun.clientcommands.CommandFactory;

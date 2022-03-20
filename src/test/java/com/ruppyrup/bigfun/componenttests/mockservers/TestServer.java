@@ -1,4 +1,4 @@
-package com.ruppyrup.bigfun;
+package com.ruppyrup.bigfun.componenttests.mockservers;
 
 import java.util.Set;
 

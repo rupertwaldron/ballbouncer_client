@@ -30,6 +30,10 @@ javafx {
 dependencies {
     implementation("com.jfoenix:jfoenix:9.0.10")
 
+    val cucumberRuntime by configurations.creating {
+        extendsFrom(configurations["testImplementation"])
+    }
+
 //    testImplementation group:"io.datafx", name: "flow", version: "8.0.7"
 
     testImplementation("org.testfx:openjfx-monocle:jdk-12.0.1+2")
@@ -37,10 +41,14 @@ dependencies {
     testImplementation("org.testfx:testfx-junit5:4.0.16-alpha")
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
-    testImplementation ("org.mockito:mockito-junit-jupiter:4.2.0")
-    testImplementation ("io.cucumber:cucumber-java:7.2.3")
-    testImplementation ("io.cucumber:cucumber-junit:7.2.3")
-    testImplementation ("io.cucumber:cucumber-spring:7.2.3")
+    testImplementation("org.mockito:mockito-junit-jupiter:4.3.1")
+    testImplementation("io.cucumber:cucumber-java:7.2.3")
+    testImplementation("io.cucumber:cucumber-junit:7.2.3")
+    testImplementation("io.cucumber:cucumber-spring:7.2.3")
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }
 
 //test.systemProperty("headless", "true")
